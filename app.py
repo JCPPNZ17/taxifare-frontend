@@ -5,7 +5,7 @@ import streamlit as st  # the frontend framework
 
 st.title("TaxiFare 🚕")  # page title
 
-url = "http://localhost:8000/predict"  # local API; swap for the Cloud Run URL later
+api_url = st.secrets["API_URL"]
 
 pickup_date = st.date_input("Pickup date", datetime.date(2014, 7, 6))  # date part of the ride
 pickup_time = st.time_input("Pickup time", datetime.time(19, 18))  # time part of the ride
@@ -24,7 +24,7 @@ if st.button("Predict fare"):  # only call the API on click, not on every rerun
         "dropoff_latitude": dropoff_latitude,
         "passenger_count": int(passenger_count),  # cast to int so the API gets 1, not 1.0
     }
-    response = requests.get(url, params=params)  # requests builds the query string from params
+    response = requests.get(api_url, params=params)  # requests builds the query string from params
     if response.status_code == 200: 
         fare = response.json()["fare"]  # key must match what fast.py returns
         st.success(f"Estimated fare: ${fare:.2f}") 
